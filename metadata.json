@@ -1,0 +1,7 @@
+{
+  "name": "OralHealth AI: OPMD Assessment Tool",
+  "description": "A professional tool for assessing oral lesions and risk factors for Oral Potentially Malignant Disorders using AI analysis.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
