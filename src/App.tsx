@@ -83,13 +83,11 @@ export default function App() {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-bottom border-zinc-100">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 bg-zinc-900 rounded-xl flex items-center justify-center text-white shadow-lg">
-              <Stethoscope size={22} />
-            </div>
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="OPMD Hub Logo" className="w-12 h-12 object-contain" referrerPolicy="no-referrer" />
             <div>
-              <h1 className="text-lg font-black tracking-tight leading-none">OralHealth AI</h1>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600">OPMD Assessment</span>
+              <h1 className="text-lg font-black tracking-tight leading-none">OPMD Hub AI</h1>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600">OPMD Assessment Tool</span>
             </div>
           </div>
           
@@ -290,9 +288,9 @@ export default function App() {
       {/* Footer */}
       <footer className="max-w-3xl mx-auto px-6 py-12 border-t border-zinc-100 mt-12">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-2 opacity-30">
-            <Stethoscope size={16} />
-            <span className="text-xs font-bold uppercase tracking-widest">OralHealth AI v1.0</span>
+          <div className="flex items-center gap-2 opacity-50">
+            <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain" referrerPolicy="no-referrer" />
+            <span className="text-xs font-bold uppercase tracking-widest">OPMD Hub AI v1.0</span>
           </div>
           <div className="flex gap-6">
             <a href="#" className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:text-zinc-900 transition-colors">Privacy Policy</a>

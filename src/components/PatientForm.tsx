@@ -25,7 +25,7 @@ export const PatientForm: React.FC<Props> = ({ data, onChange, onNext }) => {
             value={data.name}
             onChange={handleChange}
             className="w-full bg-white border border-zinc-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none"
-            placeholder="John Doe"
+            placeholder="Firstname Lastname"
           />
         </div>
         <div className="space-y-2">
@@ -47,7 +47,7 @@ export const PatientForm: React.FC<Props> = ({ data, onChange, onNext }) => {
             value={data.region}
             onChange={handleChange}
             className="w-full bg-white border border-zinc-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none"
-            placeholder="California"
+            placeholder="Delhi"
           />
         </div>
         <div className="space-y-2">
@@ -58,7 +58,7 @@ export const PatientForm: React.FC<Props> = ({ data, onChange, onNext }) => {
             value={data.nation}
             onChange={handleChange}
             className="w-full bg-white border border-zinc-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none"
-            placeholder="USA"
+            placeholder="India"
           />
         </div>
       </div>

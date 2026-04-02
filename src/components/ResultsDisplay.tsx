@@ -35,6 +35,16 @@ export const ResultsDisplay: React.FC<Props> = ({ result, onReset }) => {
             ? "The risk factor score suggests a heightened concern for oral cancer. Immediate professional consultation is strongly advised."
             : "The risk factor score indicates a lower immediate concern, but monitoring and regular checkups are still recommended."}
         </p>
+        {isHighRisk && (
+          <div className="mt-6 p-4 bg-white/50 rounded-2xl border border-red-100 text-left space-y-2">
+            <h4 className="text-xs font-black uppercase tracking-widest text-red-800">Treatment Advice & Referral</h4>
+            <p className="text-xs text-red-900 leading-relaxed">
+              <strong>OPMD Hub</strong>, A National Resource Centre, under the NOHP, a MoHFW funded project.<br />
+              7th Floor, New OPD Building, Lady Hardinge Medical College and Associate Hospital, New Delhi-110007.<br />
+              Email: <a href="mailto:opmdhublhmc@gmail.com" className="underline">opmdhublhmc@gmail.com</a>
+            </p>
+          </div>
+        )}
       </motion.div>
 
       {/* Provisional Diagnosis */}
