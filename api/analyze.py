@@ -1,0 +1,91 @@
+import os
+import json
+import base64
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import google.generativeai as genai
+
+app = Flask(__name__)
+CORS(app)
+
+# Configure Gemini
+api_key = os.environ.get("GEMINI_API_KEY")
+genai.configure(api_key=api_key)
+
+@app.route('/api/analyze', methods=['POST'])
+def analyze():
+    try:
+        data = request.json
+        patient_info = data.get('patientInfo', {})
+        risk_habits = data.get('riskHabits', {})
+        images = data.get('images', [])
+
+        model = genai.GenerativeModel("gemini-3-flash-preview")
+
+        prompt = f"""
+        You are a specialized oral pathology AI assistant. 
+        Analyze the following patient data and oral cavity images to assess for Oral Potentially Malignant Disorders (OPMD).
+
+        Patient Information:
+        - Name: {patient_info.get('name')}
+        - Age: {patient_info.get('age')}
+        - Region: {patient_info.get('region')}
+        - Nation: {patient_info.get('nation')}
+
+        Risk Habits:
+        - Chewing Tobacco: {"Yes" if risk_habits.get('chewingTobacco') else "No"}
+        - Smoking: {"Yes" if risk_habits.get('smoking') else "No"}
+        - Areca Nut Use: {"Yes" if risk_habits.get('arecaNut') else "No"}
+        - Sharp Teeth: {"Yes" if risk_habits.get('sharpTeeth') else "No"}
+        - Ill-fitting Dentures: {"Yes" if risk_habits.get('illFittingDentures') else "No"}
+        - Poor Oral Hygiene: {"Yes" if risk_habits.get('poorHygiene') else "No"}
+        - Family History of Cancer: {"Yes" if risk_habits.get('familyHistory') else "No"}
+
+        Task:
+        1. Provide a provisional diagnosis based on the visual evidence in the images and the risk factors.
+        2. Assign a risk score from 0 to 10 (0-5: Lower risk of OPMD, 6-10: Higher likelihood of oral cancer).
+        3. Summarize the findings clearly and concisely.
+        4. Identify specific lesion types (e.g., Leukoplakia, Erythroplakia, Oral Lichen Planus).
+        5. Provide actionable recommendations.
+        6. Include references to reliable medical literature or online articles for the identified conditions.
+
+        IMPORTANT: This is a provisional assessment for educational purposes. Always include a strong medical disclaimer.
+        
+        Return the result strictly as a JSON object with the following structure:
+        {{
+            "provisionalDiagnosis": "string",
+            "riskScore": number,
+            "summary": "string",
+            "identifiedLesions": ["string"],
+            "recommendations": ["string"],
+            "literatureReferences": [{{ "title": "string", "url": "string" }}]
+        }}
+        """
+
+        content = [prompt]
+        for img_data in images:
+            # Handle data URL if present
+            if "," in img_data:
+                img_data = img_data.split(",")[1]
+            
+            content.append({
+                "mime_type": "image/jpeg",
+                "data": base64.b64decode(img_data)
+            })
+
+        response = model.generate_content(
+            content,
+            generation_config=genai.types.GenerationConfig(
+                response_mime_type="application/json",
+            )
+        )
+
+        return jsonify(json.loads(response.text))
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+# For Vercel
+def handler(request):
+    return app(request)
