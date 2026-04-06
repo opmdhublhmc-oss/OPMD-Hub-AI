@@ -6,15 +6,11 @@ export async function analyzeOralLesion(
   riskHabits: RiskHabits,
   images: string[] // base64 strings
 ): Promise<AssessmentResult> {
-  // Try to get the API key from various sources
-  const apiKey = (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY : undefined) || 
-                 import.meta.env.VITE_GEMINI_API_KEY;
-
-  // If we have a valid GEMINI_API_KEY, call it directly from frontend.
-  // We check that it's not the placeholder value from .env.example.
-  if (apiKey && apiKey !== "MY_GEMINI_API_KEY" && apiKey !== "undefined") {
+  // If we have a GEMINI_API_KEY in the environment (AI Studio Build), call it directly from frontend.
+  // This is the most reliable way in the AI Studio environment.
+  if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== "MY_GEMINI_API_KEY") {
     try {
-      const ai = new GoogleGenAI({ apiKey });
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       const model = "gemini-3-flash-preview";
 
       const prompt = `
@@ -100,11 +96,11 @@ export async function analyzeOralLesion(
       return JSON.parse(response.text || "{}");
     } catch (error) {
       console.error('Error calling Gemini API directly:', error);
-      throw new Error(`AI Analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw error;
     }
   }
 
-  // Fallback to backend call (for Full-Stack environments like Cloud Run)
+  // Fallback to backend call (for Vercel or other environments)
   try {
     const response = await fetch('/api/analyze', {
       method: 'POST',
@@ -119,9 +115,6 @@ export async function analyzeOralLesion(
     });
 
     if (!response.ok) {
-      if (response.status === 404) {
-        throw new Error("AI analysis endpoint not found. Note: Netlify is a static host and doesn't run the backend server. Please configure GEMINI_API_KEY in your Netlify environment variables for client-side analysis.");
-      }
       const errorData = await response.json();
       throw new Error(errorData.error || 'Failed to analyze oral lesion');
     }

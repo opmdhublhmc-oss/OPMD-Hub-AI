@@ -9,22 +9,24 @@ app = Flask(__name__)
 CORS(app)
 
 # Configure Gemini
-api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("API_KEY")
+api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY") or os.environ.get("API_KEY")
 
 # If the key is the placeholder from .env.example, ignore it
-if api_key == "MY_GEMINI_API_KEY" or not api_key:
-    api_key = os.environ.get("API_KEY")
+if api_key == "MY_GEMINI_API_KEY":
+    api_key = None
 
-if not api_key or api_key == "MY_GEMINI_API_KEY":
+if not api_key:
     print("Warning: Gemini API key is not configured.")
 else:
     print(f"Using API key (length: {len(api_key)})")
-
-genai.configure(api_key=api_key)
+    genai.configure(api_key=api_key)
 
 @app.route('/api/analyze', methods=['POST'])
 def analyze():
     try:
+        if not api_key:
+            return jsonify({"error": "Gemini API key is not configured. Please set the GEMINI_API_KEY environment variable in your deployment settings (e.g., Vercel Dashboard)."}), 500
+
         data = request.json
         patient_info = data.get('patientInfo', {})
         risk_habits = data.get('riskHabits', {})
