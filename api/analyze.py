@@ -39,6 +39,7 @@ def analyze():
         Patient Information:
         - Name: {patient_info.get('name')}
         - Age: {patient_info.get('age')}
+        - Phone: {patient_info.get('phoneNumber')}
         - Region: {patient_info.get('region')}
         - Nation: {patient_info.get('nation')}
 

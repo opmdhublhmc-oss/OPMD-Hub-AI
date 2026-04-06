@@ -62,6 +62,7 @@ async function startServer() {
         Patient Information:
         - Name: ${patientInfo.name}
         - Age: ${patientInfo.age}
+        - Phone: ${patientInfo.phoneNumber}
         - Region: ${patientInfo.region}
         - Nation: ${patientInfo.nation}
 

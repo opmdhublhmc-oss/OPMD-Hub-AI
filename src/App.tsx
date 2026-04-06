@@ -15,6 +15,7 @@ import { ResultsDisplay } from './components/ResultsDisplay';
 import { About } from './components/About';
 import { Contact } from './components/Contact';
 import { analyzeOralLesion } from './services/geminiService';
+import { supabase } from './lib/supabase';
 
 type View = 'home' | 'about' | 'contact' | 'assessment';
 type Step = 'intro' | 'patient-info' | 'risk-habits' | 'image-upload' | 'analyzing' | 'results';
@@ -25,6 +26,7 @@ export default function App() {
   const [patientInfo, setPatientInfo] = useState<PatientInfo>({
     name: '',
     age: '',
+    phoneNumber: '',
     region: '',
     nation: '',
   });
@@ -53,6 +55,35 @@ export default function App() {
       const analysisResult = await analyzeOralLesion(patientInfo, riskHabits, images);
       setResult(analysisResult);
       setStep('results');
+
+      // Save to Supabase
+      try {
+        const { error: supabaseError } = await supabase
+          .from('assessments')
+          .insert([
+            {
+              patient_name: patientInfo.name,
+              patient_age: parseInt(patientInfo.age),
+              patient_phone: patientInfo.phoneNumber,
+              patient_region: patientInfo.region,
+              patient_nation: patientInfo.nation,
+              risk_habits: riskHabits,
+              risk_score: analysisResult.riskScore,
+              provisional_diagnosis: analysisResult.provisionalDiagnosis,
+              identified_lesions: analysisResult.identifiedLesions,
+              summary: analysisResult.summary,
+              created_at: new Date().toISOString(),
+            },
+          ]);
+
+        if (supabaseError) {
+          console.error('Error saving to Supabase:', supabaseError);
+        } else {
+          console.log('Successfully saved to Supabase');
+        }
+      } catch (dbErr) {
+        console.error('Database connection error:', dbErr);
+      }
     } catch (err) {
       console.error(err);
       setError('An error occurred during analysis. Please try again.');
@@ -63,7 +94,7 @@ export default function App() {
   const reset = () => {
     setView('home');
     setStep('intro');
-    setPatientInfo({ name: '', age: '', region: '', nation: '' });
+    setPatientInfo({ name: '', age: '', phoneNumber: '', region: '', nation: '' });
     setRiskHabits({
       chewingTobacco: false,
       smoking: false,

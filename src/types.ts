@@ -1,6 +1,7 @@
 export interface PatientInfo {
   name: string;
   age: string;
+  phoneNumber: string;
   region: string;
   nation: string;
 }

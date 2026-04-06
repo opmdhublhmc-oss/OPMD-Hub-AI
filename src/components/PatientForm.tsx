@@ -12,7 +12,7 @@ export const PatientForm: React.FC<Props> = ({ data, onChange, onNext }) => {
     onChange({ ...data, [e.target.name]: e.target.value });
   };
 
-  const isComplete = data.name && data.age && data.region && data.nation;
+  const isComplete = data.name && data.age && data.phoneNumber && data.region && data.nation;
 
   return (
     <div className="space-y-6">
@@ -37,6 +37,17 @@ export const PatientForm: React.FC<Props> = ({ data, onChange, onNext }) => {
             onChange={handleChange}
             className="w-full bg-white border border-zinc-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none"
             placeholder="25"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Contact Number</label>
+          <input
+            type="tel"
+            name="phoneNumber"
+            value={data.phoneNumber}
+            onChange={handleChange}
+            className="w-full bg-white border border-zinc-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none"
+            placeholder="+91 98765 43210"
           />
         </div>
         <div className="space-y-2">

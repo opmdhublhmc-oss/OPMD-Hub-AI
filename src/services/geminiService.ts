@@ -20,6 +20,7 @@ export async function analyzeOralLesion(
         Patient Information:
         - Name: ${patientInfo.name}
         - Age: ${patientInfo.age}
+        - Phone: ${patientInfo.phoneNumber}
         - Region: ${patientInfo.region}
         - Nation: ${patientInfo.nation}
 
