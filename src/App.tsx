@@ -133,7 +133,7 @@ export default function App() {
             className="flex items-center gap-3 cursor-pointer"
             onClick={() => setView('home')}
           >
-            <img src="/logo.png" alt="OPMD Hub Logo" className="w-12 h-12 object-contain" referrerPolicy="no-referrer" />
+            <img src="https://i.postimg.cc/XqdZHMv6/new-logo-(19-jan-2024).png" alt="OPMD Hub Logo" className="w-12 h-12 object-contain" referrerPolicy="no-referrer" />
             <div className="hidden sm:block">
               <h1 className="text-lg font-black tracking-tight leading-none">OPMD Hub AI</h1>
               <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600">OPMD Assessment Tool</span>
@@ -392,7 +392,7 @@ export default function App() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain" referrerPolicy="no-referrer" />
+              <img src="https://i.postimg.cc/XqdZHMv6/new-logo-(19-jan-2024).png" alt="Logo" className="w-8 h-8 object-contain" referrerPolicy="no-referrer" />
               <span className="text-sm font-black uppercase tracking-widest">OPMD Hub AI</span>
             </div>
             <p className="text-xs text-zinc-400 leading-relaxed">
