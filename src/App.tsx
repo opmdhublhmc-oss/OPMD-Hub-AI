@@ -14,10 +14,11 @@ import { ImageUpload } from './components/ImageUpload';
 import { ResultsDisplay } from './components/ResultsDisplay';
 import { About } from './components/About';
 import { Contact } from './components/Contact';
+import { Records } from './components/Records';
 import { analyzeOralLesion } from './services/geminiService';
 import { supabase } from './lib/supabase';
 
-type View = 'home' | 'about' | 'contact' | 'assessment';
+type View = 'home' | 'about' | 'contact' | 'assessment' | 'records';
 type Step = 'intro' | 'patient-info' | 'risk-habits' | 'image-upload' | 'analyzing' | 'results';
 
 export default function App() {
@@ -121,6 +122,7 @@ export default function App() {
     { id: 'home', label: 'Home', icon: Home },
     { id: 'about', label: 'About', icon: BookOpen },
     { id: 'assessment', label: 'Assessment', icon: Stethoscope },
+    { id: 'records', label: 'Records', icon: ClipboardList },
     { id: 'contact', label: 'Contact', icon: Mail },
   ];
 
@@ -233,6 +235,7 @@ export default function App() {
 
           {view === 'about' && <About />}
           {view === 'contact' && <Contact />}
+          {view === 'records' && <Records />}
 
           {view === 'assessment' && (
             <motion.div

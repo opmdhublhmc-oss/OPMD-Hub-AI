@@ -23,31 +23,30 @@ async function startServer() {
       const { patientInfo, riskHabits, images } = req.body;
       
       // Try various sources for the API key
+      const userProvidedKey = "AIzaSyDc5lzmZ8MtF7ZTOkviRT-IOIJpQXD_ckA";
       let apiKey = process.env.GEMINI_API_KEY || 
                    viteEnv.GEMINI_API_KEY ||
+                   process.env.VITE_GEMINI_API_KEY ||
+                   viteEnv.VITE_GEMINI_API_KEY ||
                    process.env.API_KEY || 
                    viteEnv.API_KEY ||
                    process.env.GOOGLE_API_KEY ||
-                   viteEnv.GOOGLE_API_KEY;
+                   viteEnv.GOOGLE_API_KEY ||
+                   process.env.GOOGLE_GENERATIVE_AI_API_KEY ||
+                   viteEnv.GOOGLE_GENERATIVE_AI_API_KEY;
       
-      // Case-insensitive search if still not found
-      if (!apiKey) {
-        const allEnv = { ...process.env, ...viteEnv };
-        const keyName = Object.keys(allEnv).find(k => k.toUpperCase().includes("GEMINI") && k.toUpperCase().includes("KEY"));
-        if (keyName) {
-          apiKey = allEnv[keyName];
-        }
-      }
-
-      // If the key is the placeholder from .env.example, ignore it
-      if (apiKey === "MY_GEMINI_API_KEY") {
-        apiKey = undefined;
+      // If the key is missing or is a placeholder, use the user provided fallback
+      if (!apiKey || apiKey === "MY_GEMINI_API_KEY" || apiKey.includes("TODO")) {
+        apiKey = userProvidedKey;
       }
 
       if (!apiKey) {
-        return res.status(500).json({ 
-          error: "Gemini API key is not configured. Please go to the 'Settings' menu (gear icon) in AI Studio, click 'Secrets', and add a secret named GEMINI_API_KEY with your API key." 
-        });
+        const isVercel = process.env.VERCEL === "1";
+        const errorMessage = isVercel 
+          ? "Gemini API key is not configured. Please add GEMINI_API_KEY to your Vercel project's Environment Variables."
+          : "Gemini API key is not configured. Please go to the 'Settings' menu (gear icon) in AI Studio, click 'Secrets', and add a secret named GEMINI_API_KEY with your API key.";
+        
+        return res.status(500).json({ error: errorMessage });
       }
 
       console.log(`Using API key (length: ${apiKey.length}, starts with: ${apiKey.substring(0, 3)}...)`);

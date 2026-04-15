@@ -8,9 +8,16 @@ export async function analyzeOralLesion(
 ): Promise<AssessmentResult> {
   // If we have a GEMINI_API_KEY in the environment (AI Studio Build), call it directly from frontend.
   // This is the most reliable way in the AI Studio environment.
-  if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== "MY_GEMINI_API_KEY") {
+  const userProvidedKey = "AIzaSyDc5lzmZ8MtF7ZTOkviRT-IOIJpQXD_ckA";
+  let apiKey = process.env.GEMINI_API_KEY;
+  
+  if (!apiKey || apiKey === "MY_GEMINI_API_KEY" || apiKey === "" || apiKey.includes("TODO")) {
+    apiKey = userProvidedKey;
+  }
+  
+  if (apiKey) {
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const ai = new GoogleGenAI({ apiKey });
       const model = "gemini-3-flash-preview";
 
       const prompt = `

@@ -25,7 +25,9 @@ else:
 def analyze():
     try:
         if not api_key:
-            return jsonify({"error": "Gemini API key is not configured. Please set the GEMINI_API_KEY environment variable in your deployment settings (e.g., Vercel Dashboard)."}), 500
+            is_vercel = os.environ.get("VERCEL") == "1"
+            error_message = "Gemini API key is not configured. Please add GEMINI_API_KEY to your Vercel project's Environment Variables." if is_vercel else "Gemini API key is not configured. Please go to the 'Settings' menu (gear icon) in AI Studio, click 'Secrets', and add a secret named GEMINI_API_KEY with your API key."
+            return jsonify({"error": error_message}), 500
 
         data = request.json
         patient_info = data.get('patientInfo', {})
