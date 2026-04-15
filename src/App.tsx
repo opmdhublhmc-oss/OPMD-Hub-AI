@@ -5,7 +5,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Stethoscope, Activity, ClipboardList, Camera, CheckCircle2, Loader2, Info, Home, BookOpen, Mail, ChevronRight } from 'lucide-react';
+import { Stethoscope, Activity, ClipboardList, Camera, CheckCircle2, Loader2, Info, Home, BookOpen, Mail, ChevronRight, AlertCircle } from 'lucide-react';
 import { PatientInfo, RiskHabits, AssessmentResult } from './types';
 import { MedicalDisclaimer } from './components/MedicalDisclaimer';
 import { PatientForm } from './components/PatientForm';
@@ -43,6 +43,7 @@ export default function App() {
   const [images, setImages] = useState<string[]>([]);
   const [result, setResult] = useState<AssessmentResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [dbStatus, setDbStatus] = useState<{ success?: boolean; error?: string } | null>(null);
 
   const handleStart = () => {
     setView('assessment');
@@ -59,6 +60,7 @@ export default function App() {
 
       // Save to Supabase
       try {
+        setDbStatus(null);
         const { error: supabaseError } = await supabase
           .from('assessments')
           .insert([
@@ -79,11 +81,14 @@ export default function App() {
 
         if (supabaseError) {
           console.error('Error saving to Supabase:', supabaseError);
+          setDbStatus({ success: false, error: supabaseError.message });
         } else {
           console.log('Successfully saved to Supabase');
+          setDbStatus({ success: true });
         }
       } catch (dbErr) {
         console.error('Database connection error:', dbErr);
+        setDbStatus({ success: false, error: dbErr instanceof Error ? dbErr.message : 'Connection failed' });
       }
     } catch (err) {
       console.error(err);
@@ -383,6 +388,33 @@ export default function App() {
                     <p className="text-zinc-500">Based on the provided information and visual analysis.</p>
                   </div>
                   <ResultsDisplay result={result} onReset={reset} />
+                  
+                  {dbStatus && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className={`p-4 rounded-xl border flex items-center gap-3 ${
+                        dbStatus.success 
+                          ? 'bg-emerald-50 border-emerald-100 text-emerald-700' 
+                          : 'bg-red-50 border-red-100 text-red-700'
+                      }`}
+                    >
+                      {dbStatus.success ? (
+                        <>
+                          <CheckCircle2 size={18} />
+                          <span className="text-sm font-medium">Assessment data successfully synced to Supabase database.</span>
+                        </>
+                      ) : (
+                        <>
+                          <AlertCircle size={18} />
+                          <div className="flex flex-col">
+                            <span className="text-sm font-bold">Database Sync Failed</span>
+                            <span className="text-xs opacity-80">{dbStatus.error}</span>
+                          </div>
+                        </>
+                      )}
+                    </motion.div>
+                  )}
                 </motion.div>
               )}
             </motion.div>
